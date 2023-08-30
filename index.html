@@ -246,7 +246,7 @@
       var moduleSize = parseFloat(document.getElementById('moduleSize').value);
 
       // Check for missing or zero values
-      if (!moduleCode || !moduleSize || !avgTemp || !punchInitial || !punchDestress || !punchWeld) {
+      if (!moduleCode || !moduleSize || isNaN(avgTemp) || isNaN(punchInitial) || isNaN(punchDestress) || isNaN(punchWeld)) {
         openModal();
         return;
       }
