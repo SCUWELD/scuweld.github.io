@@ -5,7 +5,7 @@
   <title>SFT Calculator</title>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600&display=swap" rel="stylesheet">
   <style>
-    body {
+     body {
       font-family: Arial, sans-serif;
       margin: 0;
       padding: 0;
@@ -102,51 +102,55 @@
 <body>
   <h1>SFT CALCULATOR</h1>
   <div class="container">
-  <table>
-    <tr>
-      <td>Module Code</td>
-      <td><input type="text" id="moduleCode"></td>
-    </tr>
-    <tr>
-      <td>Module Size (m)</td>
-      <td><input type="number" id="moduleSize"></td>
-    </tr>
-    <tr>
-      <td>Average Temperature (C)</td>
-      <td><input type="number" id="avgTemp"></td>
-    </tr>
-    <tr>
-      <td>Punch Mark Initial (mm)</td>
-      <td><input type="number" id="punchInitial"></td>
-    </tr>
-    <tr>
-      <td>Punch Mark after Destress (mm)</td>
-      <td><input type="number" id="punchDestress"></td>
-    </tr>
-    <tr>
-      <td>Punch Mark after Weld (mm)</td>
-      <td><input type="number" id="punchWeld"></td>
-    </tr>
-  </table>
-  <button onclick="calculate()">Calculate</button>
-  <button onclick="clearFields()">Clear Fields</button>
-  <table>
-    <tr>
-      <td>Punch Length (mm)</td>
-      <td><span id="punchLength"></span></td>
-    </tr>
-    <tr>
-      <td>Calculated Extension (mm)</td>
-      <td><span id="calculatedExtension"></span></td>
-    </tr>
-    <tr>
-      <td>Stress Free Temperature (SFT) (C)</td>
-      <td><span id="stressfreeTemp"></span></td>
-    </tr>
-  </table>
-  <button onclick="save()">Save</button>
-</div>
-
+    <table>
+      <tr>
+        <td>Entered By</td>
+        <td><input type="text" id="enteredBy"></td>
+      </tr>
+      <tr>
+        <td>Module Code</td>
+        <td><input type="text" id="moduleCode"></td>
+      </tr>
+      <tr>
+        <td>Module Size (m)</td>
+        <td><input type="number" id="moduleSize"></td>
+      </tr>
+      <tr>
+        <td>Average Temperature (C)</td>
+        <td><input type="number" id="avgTemp"></td>
+      </tr>
+      <tr>
+        <td>Punch Mark Initial (mm)</td>
+        <td><input type="number" id="punchInitial"></td>
+      </tr>
+      <tr>
+        <td>Punch Mark after Destress (mm)</td>
+        <td><input type="number" id="punchDestress"></td>
+      </tr>
+      <tr>
+        <td>Punch Mark after Weld (mm)</td>
+        <td><input type="number" id="punchWeld"></td>
+      </tr>
+    </table>
+    <button onclick="calculate()">Calculate</button>
+    <button onclick="clearFields()">Clear Fields</button>
+    <table>
+      <tr>
+        <td>Punch Length (mm)</td>
+        <td><span id="punchLength"></span></td>
+      </tr>
+      <tr>
+        <td>Calculated Extension (mm)</td>
+        <td><span id="calculatedExtension"></span></td>
+      </tr>
+      <tr>
+        <td>Stress Free Temperature (SFT) (C)</td>
+        <td><span id="stressfreeTemp"></span></td>
+      </tr>
+    </table>
+    <button onclick="save()">Save</button>
+  </div>
+  
   <!-- Modal for missing values alert -->
   <div class="modal-container" id="modalContainer">
     <div class="modal-content">
@@ -155,44 +159,89 @@
     </div>
   </div>
 
+  <!-- Modal for confirmation and warning -->
+  <div class="modal-container" id="confirmModalContainer">
+    <div class="modal-content">
+      <p>Do you want to save the entered and calculated data?</p>
+      <p id="warningText"></p>
+      <button onclick="saveData()">Save</button>
+      <button onclick="closeConfirmModal()">Cancel</button>
+    </div>
+  </div>
+
   <script>
+    // ... your existing JavaScript ...
+
     function calculate() {
-    // Get user input values
-    var moduleSize = parseFloat(document.getElementById('moduleSize').value);
-    var avgTemp = parseFloat(document.getElementById('avgTemp').value);
-    var punchInitial = parseFloat(document.getElementById('punchInitial').value);
-    var punchDestress = parseFloat(document.getElementById('punchDestress').value);
-    var punchWeld = parseFloat(document.getElementById('punchWeld').value);
-    
-    if (!moduleCode || !moduleSize || !avgTemp || !punchInitial || !punchDestress || !punchWeld) {
+      // Get user input values
+      var moduleCode = document.getElementById('moduleCode').value;
+      var moduleSize = parseFloat(document.getElementById('moduleSize').value);
+      var avgTemp = parseFloat(document.getElementById('avgTemp').value);
+      var punchInitial = parseFloat(document.getElementById('punchInitial').value);
+      var punchDestress = parseFloat(document.getElementById('punchDestress').value);
+      var punchWeld = parseFloat(document.getElementById('punchWeld').value);
+
+      // Check for missing values
+      if (!moduleCode || !moduleSize || isNaN(avgTemp) || isNaN(punchInitial) || isNaN(punchDestress) || isNaN(punchWeld)) {
         openModal();
         return;
       }
 
-    // Perform calculations here
-    var punchLength = punchDestress - punchInitial;
-    var calculatedExtension = (38 - avgTemp) * 0.0117 * moduleSize;
-    var stressfreeTemp = (((punchInitial - calculatedExtension + punchLength) - punchWeld) / (0.0117 * moduleSize)) + 38;
+      // Perform calculations here
+      var punchLength = punchDestress - punchInitial;
+      var calculatedExtension = (38 - avgTemp) * 0.0117 * moduleSize;
+      var stressfreeTemp = (((punchInitial - calculatedExtension + punchLength) - punchWeld) / (0.0117 * moduleSize)) + 38;
 
-    // Update the results on the page
-    document.getElementById('punchLength').textContent = punchLength.toFixed(2);
-    document.getElementById('calculatedExtension').textContent = calculatedExtension.toFixed(2);
-    document.getElementById('stressfreeTemp').textContent = stressfreeTemp.toFixed(2);
-  }
+      // Update the results on the page
+      document.getElementById('punchLength').textContent = punchLength.toFixed(2);
+      document.getElementById('calculatedExtension').textContent = calculatedExtension.toFixed(2);
+      document.getElementById('stressfreeTemp').textContent = stressfreeTemp.toFixed(2);
 
-  function clearFields() {
-    document.getElementById('moduleCode').value = '';
-    document.getElementById('moduleSize').value = '';
-    document.getElementById('avgTemp').value = '';
-    document.getElementById('punchInitial').value = '';
-    document.getElementById('punchDestress').value = '';
-    document.getElementById('punchWeld').value = '';
-    document.getElementById('punchLength').textContent = '';
-    document.getElementById('calculatedExtension').textContent = '';
-    document.getElementById('stressfreeTemp').textContent = '';
-  }
+      // Check if stressfreeTemp is above 40 or below 36
+      if (stressfreeTemp > 40 || stressfreeTemp < 36) {
+        document.getElementById('warningText').textContent = 'Warning: Stress Free Temperature is outside the recommended range (36 - 40).';
+      } else {
+        document.getElementById('warningText').textContent = '';
+      }
 
-    function save() {
+      // Open confirmation modal
+      openConfirmModal();
+    }
+
+    function clearFields() {
+      document.getElementById('moduleCode').value = '';
+      document.getElementById('moduleSize').value = '';
+      document.getElementById('avgTemp').value = '';
+      document.getElementById('punchInitial').value = '';
+      document.getElementById('punchDestress').value = '';
+      document.getElementById('punchWeld').value = '';
+      document.getElementById('punchLength').textContent = '';
+      document.getElementById('calculatedExtension').textContent = '';
+      document.getElementById('stressfreeTemp').textContent = '';
+    }
+
+    // Open the modal
+    function openModal() {
+      document.getElementById('modalContainer').style.display = 'flex';
+    }
+
+    // Close the modal
+    function closeModal() {
+      document.getElementById('modalContainer').style.display = 'none';
+    }
+
+    // Open the confirmation modal
+    function openConfirmModal() {
+      document.getElementById('confirmModalContainer').style.display = 'flex';
+    }
+
+    // Close the confirmation modal
+    function closeConfirmModal() {
+      document.getElementById('confirmModalContainer').style.display = 'none';
+    }
+
+    // Save data
+    function saveData() {
       var moduleCode = document.getElementById('moduleCode').value;
       var moduleSize = parseFloat(document.getElementById('moduleSize').value);
 
@@ -206,16 +255,9 @@
       moduleCode: moduleCode,
       moduleSize: moduleSize,
     }
-  }
-
-    // Open the modal
-    function openModal() {
-      document.getElementById('modalContainer').style.display = 'flex';
-    }
-
-    // Close the modal
-    function closeModal() {
-      document.getElementById('modalContainer').style.display = 'none';
+  
+      // Close confirmation modal
+      closeConfirmModal();
     }
   </script>
 </body>
