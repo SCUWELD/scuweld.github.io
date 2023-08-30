@@ -163,6 +163,11 @@
     var punchInitial = parseFloat(document.getElementById('punchInitial').value);
     var punchDestress = parseFloat(document.getElementById('punchDestress').value);
     var punchWeld = parseFloat(document.getElementById('punchWeld').value);
+    
+    if (!moduleCode || !moduleSize || !avgTemp || !punchInitial || !punchDestress || !punchWeld) {
+        openModal();
+        return;
+      }
 
     // Perform calculations here
     var punchLength = punchDestress - punchInitial;
