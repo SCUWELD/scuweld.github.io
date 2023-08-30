@@ -67,6 +67,28 @@
       background-color: #2980b9;
     }
 
+    /* Styles for the modal */
+    .modal-container {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+
+    .modal-content {
+      background-color: #fff;
+      border-radius: 10px;
+      padding: 20px;
+      max-width: 300px;
+      text-align: center;
+    }
+
     @media screen and (max-width: 600px) {
       .container {
         padding: 10px;
@@ -124,8 +146,17 @@
   </table>
   <button onclick="save()">Save</button>
 </div>
-<script>
-  function calculate() {
+
+  <!-- Modal for missing values alert -->
+  <div class="modal-container" id="modalContainer">
+    <div class="modal-content">
+      <p>Please fill in all required fields.</p>
+      <button onclick="closeModal()">OK</button>
+    </div>
+  </div>
+
+  <script>
+    function calculate() {
     // Get user input values
     var moduleSize = parseFloat(document.getElementById('moduleSize').value);
     var avgTemp = parseFloat(document.getElementById('avgTemp').value);
@@ -156,28 +187,30 @@
     document.getElementById('stressfreeTemp').textContent = '';
   }
 
-  function save() {
-    // Get user input values
-    var moduleCode = document.getElementById('moduleCode').value;
-    var moduleSize = parseFloat(document.getElementById('moduleSize').value);
-    // Get other input values similarly
+    function save() {
+      var moduleCode = document.getElementById('moduleCode').value;
+      var moduleSize = parseFloat(document.getElementById('moduleSize').value);
 
-    // Check for missing or zero values
-    if (!moduleCode || !moduleSize || !avgTemp || !punchInitial || !punchDestress || !punchWeld) {
-      alert('Please fill in all required fields.');
-      return;
-    }
+      // Check for missing or zero values
+      if (!moduleCode || !moduleSize || !avgTemp || !punchInitial || !punchDestress || !punchWeld) {
+        openModal();
+        return;
+      }
 
-    // Create an object with all the data
-    var data = {
+      var data = {
       moduleCode: moduleCode,
       moduleSize: moduleSize,
-      // Include other values in the object
-    };
+    }
 
-    // Send the data to a backend server using AJAX or fetch
-    // Handle data saving on the server-side
-  }
-</script>
+    // Open the modal
+    function openModal() {
+      document.getElementById('modalContainer').style.display = 'flex';
+    }
+
+    // Close the modal
+    function closeModal() {
+      document.getElementById('modalContainer').style.display = 'none';
+    }
+  </script>
 </body>
 </html>
