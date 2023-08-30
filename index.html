@@ -3,7 +3,21 @@
 <head>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>SFT Calculator</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600&display=swap" rel="stylesheet">
   <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f0f0f0;
+    }
+    h1 {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 600;
+      text-align: center;
+      margin: 20px 0;
+      color: #333;
+    }
     body {
       font-family: Arial, sans-serif;
       margin: 0;
@@ -66,104 +80,104 @@
 <body>
   <h1>SFT CALCULATOR</h1>
   <div class="container">
-    <table>
-      <tr>
-        <td>Module Code</td>
-        <td><input type="text" id="moduleCode"></td>
-      </tr>
-      <tr>
-        <td>Module Size (m)</td>
-        <td><input type="number" id="moduleSize"></td>
-      </tr>
-      <tr>
-        <td>Average Temperature (C)</td>
-        <td><input type="number" id="avgTemp"></td>
-      </tr>
-      <tr>
-        <td>Punch Mark Initial (mm)</td>
-        <td><input type="number" id="punchInitial"></td>
-      </tr>
-      <tr>
-        <td>Punch Mark after Destress (mm)</td>
-        <td><input type="number" id="punchDestress"></td>
-      </tr>
-      <tr>
-        <td>Punch Mark after Weld (mm)</td>
-        <td><input type="number" id="punchWeld"></td>
-      </tr>
-    </table>
-    <button onclick="calculate()">Calculate</button>
-    <button onclick="clearFields()">Clear Fields</button>
-    <table>
-      <tr>
-        <td>Punch Length (mm)</td>
-        <td><span id="punchLength"></span></td>
-      </tr>
-      <tr>
-        <td>Calculated Extension (mm)</td>
-        <td><span id="calculatedExtension"></span></td>
-      </tr>
-      <tr>
-        <td>Stress Free Temperature (SFT) (C)</td>
-        <td><span id="stressfreeTemp"></span></td>
-      </tr>
-    </table>
-    <button onclick="save()">Save</button>
-  </div>
-  <script>
-    function calculate() {
-      // Get user input values
-      var moduleSize = parseFloat(document.getElementById('moduleSize').value);
-      var avgTemp = parseFloat(document.getElementById('avgTemp').value);
-      var punchInitial = parseFloat(document.getElementById('punchInitial').value);
-      var punchDestress = parseFloat(document.getElementById('punchDestress').value);
-      var punchWeld = parseFloat(document.getElementById('punchWeld').value);
+  <table>
+    <tr>
+      <td>Module Code</td>
+      <td><input type="text" id="moduleCode"></td>
+    </tr>
+    <tr>
+      <td>Module Size (m)</td>
+      <td><input type="number" id="moduleSize"></td>
+    </tr>
+    <tr>
+      <td>Average Temperature (C)</td>
+      <td><input type="number" id="avgTemp"></td>
+    </tr>
+    <tr>
+      <td>Punch Mark Initial (mm)</td>
+      <td><input type="number" id="punchInitial"></td>
+    </tr>
+    <tr>
+      <td>Punch Mark after Destress (mm)</td>
+      <td><input type="number" id="punchDestress"></td>
+    </tr>
+    <tr>
+      <td>Punch Mark after Weld (mm)</td>
+      <td><input type="number" id="punchWeld"></td>
+    </tr>
+  </table>
+  <button onclick="calculate()">Calculate</button>
+  <button onclick="clearFields()">Clear Fields</button>
+  <table>
+    <tr>
+      <td>Punch Length (mm)</td>
+      <td><span id="punchLength"></span></td>
+    </tr>
+    <tr>
+      <td>Calculated Extension (mm)</td>
+      <td><span id="calculatedExtension"></span></td>
+    </tr>
+    <tr>
+      <td>Stress Free Temperature (SFT) (C)</td>
+      <td><span id="stressfreeTemp"></span></td>
+    </tr>
+  </table>
+  <button onclick="save()">Save</button>
+</div>
+<script>
+  function calculate() {
+    // Get user input values
+    var moduleSize = parseFloat(document.getElementById('moduleSize').value);
+    var avgTemp = parseFloat(document.getElementById('avgTemp').value);
+    var punchInitial = parseFloat(document.getElementById('punchInitial').value);
+    var punchDestress = parseFloat(document.getElementById('punchDestress').value);
+    var punchWeld = parseFloat(document.getElementById('punchWeld').value);
 
-      // Perform calculations here
-      var punchLength = punchDestress - punchInitial;
-      var calculatedExtension = (38 - avgTemp) * 0.0117 * moduleSize;
-      var stressfreeTemp = (((punchInitial - calculatedExtension + punchLength) - punchWeld) / (0.0117 * moduleSize)) + 38;
+    // Perform calculations here
+    var punchLength = punchDestress - punchInitial;
+    var calculatedExtension = (38 - avgTemp) * 0.0117 * moduleSize;
+    var stressfreeTemp = (((punchInitial - calculatedExtension + punchLength) - punchWeld) / (0.0117 * moduleSize)) + 38;
 
-      // Update the results on the page
-      document.getElementById('punchLength').textContent = punchLength.toFixed(2);
-      document.getElementById('calculatedExtension').textContent = calculatedExtension.toFixed(2);
-      document.getElementById('stressfreeTemp').textContent = stressfreeTemp.toFixed(2);
+    // Update the results on the page
+    document.getElementById('punchLength').textContent = punchLength.toFixed(2);
+    document.getElementById('calculatedExtension').textContent = calculatedExtension.toFixed(2);
+    document.getElementById('stressfreeTemp').textContent = stressfreeTemp.toFixed(2);
+  }
+
+  function clearFields() {
+    document.getElementById('moduleCode').value = '';
+    document.getElementById('moduleSize').value = '';
+    document.getElementById('avgTemp').value = '';
+    document.getElementById('punchInitial').value = '';
+    document.getElementById('punchDestress').value = '';
+    document.getElementById('punchWeld').value = '';
+    document.getElementById('punchLength').textContent = '';
+    document.getElementById('calculatedExtension').textContent = '';
+    document.getElementById('stressfreeTemp').textContent = '';
+  }
+
+  function save() {
+    // Get user input values
+    var moduleCode = document.getElementById('moduleCode').value;
+    var moduleSize = parseFloat(document.getElementById('moduleSize').value);
+    // Get other input values similarly
+
+    // Check for missing or zero values
+    if (!moduleCode || !moduleSize || !avgTemp || !punchInitial || !punchDestress || !punchWeld) {
+      alert('Please fill in all required fields.');
+      return;
     }
 
-    function clearFields() {
-      document.getElementById('moduleCode').value = '';
-      document.getElementById('moduleSize').value = '';
-      document.getElementById('avgTemp').value = '';
-      document.getElementById('punchInitial').value = '';
-      document.getElementById('punchDestress').value = '';
-      document.getElementById('punchWeld').value = '';
-      document.getElementById('punchLength').textContent = '';
-      document.getElementById('calculatedExtension').textContent = '';
-      document.getElementById('stressfreeTemp').textContent = '';
-    }
+    // Create an object with all the data
+    var data = {
+      moduleCode: moduleCode,
+      moduleSize: moduleSize,
+      // Include other values in the object
+    };
 
-    function save() {
-      // Get user input values
-      var moduleCode = document.getElementById('moduleCode').value;
-      var moduleSize = parseFloat(document.getElementById('moduleSize').value);
-      // Get other input values similarly
-
-      // Check for missing or zero values
-      if (!moduleCode || !moduleSize || !avgTemp || !punchInitial || !punchDestress || !punchWeld) {
-        alert('Please fill in all required fields.');
-        return;
-      }
-
-      // Create an object with all the data
-      var data = {
-        moduleCode: moduleCode,
-        moduleSize: moduleSize,
-        // Include other values in the object
-      };
-
-      // Send the data to a backend server using AJAX or fetch
-      // Handle data saving on the server-side
-    }
-  </script>
+    // Send the data to a backend server using AJAX or fetch
+    // Handle data saving on the server-side
+  }
+</script>
 </body>
 </html>
