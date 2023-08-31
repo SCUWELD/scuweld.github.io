@@ -171,6 +171,15 @@
     </div>
   </div>
 
+  <!-- Modal for successful data save -->
+<div class="modal-container" id="successModalContainer">
+  <div class="modal-content">
+    <h2>Data Saved Successfully</h2>
+    <p>Your data has been saved successfully.</p>
+    <button onclick="clearAllAndStartAgain()">Clear All and Start Again</button>
+  </div>
+</div>
+
   <script>
     // ... your existing JavaScript ...
 
@@ -274,39 +283,47 @@
 
     // Save data
     function saveData() {
-      var enteredBy = document.getElementById('enteredBy').value;
-      var moduleCode = parseFloat(document.getElementById('moduleCode').value);
-      var moduleSize = parseFloat(document.getElementById('moduleSize').value);
-      var avgTemp = parseFloat(document.getElementById('avgTemp').value);
-      var punchInitial = parseFloat(document.getElementById('punchInitial').value);
-      var punchDestress = parseFloat(document.getElementById('punchDestress').value);
-      var punchWeld = parseFloat(document.getElementById('punchWeld').value);
+    var enteredBy = document.getElementById('enteredBy').value;
+    var moduleCode = document.getElementById('moduleCode').value;
+    var moduleSize = parseFloat(document.getElementById('moduleSize').value);
+    var avgTemp = parseFloat(document.getElementById('avgTemp').value);
+    var punchInitial = parseFloat(document.getElementById('punchInitial').value);
+    var punchDestress = parseFloat(document.getElementById('punchDestress').value);
+    var punchWeld = parseFloat(document.getElementById('punchWeld').value);
 
-      // Check for missing or zero values
-      if (!enteredBy || !moduleCode || !moduleSize || isNaN(avgTemp) || isNaN(punchInitial) || isNaN(punchDestress) || isNaN(punchWeld)) {
-        openModal();
-        return;
-      }
-
-      var data = {
-        enteredBy: enteredBy,
-        moduleCode: moduleCode,
-        moduleSize: moduleSize,
-        avgTemp: avgTemp,
-        punchInitial: punchInitial,
-        punchDestress: punchDestress,
-        punchWeld: punchWeld,
-        punchLength: punchLength,
-        calculatedExtension: calculatedExtension,
-        stressfreeTemp: stressfreeTemp,
-        // Include other values in the object
-      };
-
-      // ... your save data logic ...
-
-      // Close confirmation modal
-      closeConfirmModal();
+    // Check for missing or zero values
+    if (!enteredBy || !moduleCode || isNaN(moduleSize) || isNaN(avgTemp) || isNaN(punchInitial) || isNaN(punchDestress) || isNaN(punchWeld)) {
+      openModal();
+      return;
     }
+
+    var data = {
+      enteredBy: enteredBy,
+      moduleCode: moduleCode,
+      moduleSize: moduleSize,
+      avgTemp: avgTemp,
+      punchInitial: punchInitial,
+      punchDestress: punchDestress,
+      punchWeld: punchWeld,
+      punchLength: punchLength,
+      calculatedExtension: calculatedExtension,
+      stressfreeTemp: stressfreeTemp,
+      // Include other values in the object
+    };
+
+    // ... your save data logic ...
+
+    // Show success modal
+    document.getElementById('successModalContainer').style.display = 'flex';
+    // Close confirmation modal
+    closeConfirmModal();
+  }
+
+  function clearAllAndStartAgain() {
+    clearFields();
+    // Close success modal
+    document.getElementById('successModalContainer').style.display = 'none';
+  }
   </script>
 </body>
 </html>
