@@ -165,13 +165,18 @@
     // ... your existing JavaScript ...
 
     function calculate() {
-      // Get user input values
       var moduleCode = document.getElementById('moduleCode').value;
       var moduleSize = parseFloat(document.getElementById('moduleSize').value);
       var avgTemp = parseFloat(document.getElementById('avgTemp').value);
       var punchInitial = parseFloat(document.getElementById('punchInitial').value);
       var punchDestress = parseFloat(document.getElementById('punchDestress').value);
       var punchWeld = parseFloat(document.getElementById('punchWeld').value);
+
+      // Check for missing values
+      if (!moduleCode || !moduleSize || isNaN(avgTemp) || isNaN(punchInitial) || isNaN(punchDestress) || isNaN(punchWeld)) {
+        openModal();
+        return;
+      }
 
       // Perform calculations here
       var punchLength = punchDestress - punchInitial;
@@ -192,6 +197,7 @@
     }
 
     function clearFields() {
+      document.getElementById('enteredBy').value = '';
       document.getElementById('moduleCode').value = '';
       document.getElementById('moduleSize').value = '';
       document.getElementById('avgTemp').value = '';
@@ -215,6 +221,7 @@
 
     // Open the confirmation modal
     function openConfirmModal() {
+      var enteredBy = document.getElementById('enteredBy').value;
       var moduleCode = document.getElementById('moduleCode').value;
       var moduleSize = parseFloat(document.getElementById('moduleSize').value);
       var avgTemp = parseFloat(document.getElementById('avgTemp').value);
@@ -222,7 +229,7 @@
       var punchDestress = parseFloat(document.getElementById('punchDestress').value);
       var punchWeld = parseFloat(document.getElementById('punchWeld').value);
 
-      if (!moduleCode || !moduleSize || isNaN(avgTemp) || isNaN(punchInitial) || isNaN(punchDestress) || isNaN(punchWeld)) {
+      if (!enteredBy || !moduleCode || !moduleSize || isNaN(avgTemp) || isNaN(punchInitial) || isNaN(punchDestress) || isNaN(punchWeld)) {
         openModal();
         return;
       }
@@ -238,7 +245,7 @@
     // Save data
     function saveData() {
       var enteredBy = document.getElementById('enteredBy').value;
-      var moduleCode = parsefloat(document.getElementById('moduleCode').value);
+      var moduleCode = document.getElementById('moduleCode').value;
       var moduleSize = parseFloat(document.getElementById('moduleSize').value);
       var avgTemp = parseFloat(document.getElementById('avgTemp').value);
       var punchInitial = parseFloat(document.getElementById('punchInitial').value);
@@ -246,16 +253,26 @@
       var punchWeld = parseFloat(document.getElementById('punchWeld').value);
 
       // Check for missing or zero values
-      if (!moduleCode || !moduleSize || isNaN(avgTemp) || isNaN(punchInitial) || isNaN(punchDestress) || isNaN(punchWeld)) {
+      if (!enteredBy || !moduleCode || !moduleSize || isNaN(avgTemp) || isNaN(punchInitial) || isNaN(punchDestress) || isNaN(punchWeld)) {
         openModal();
         return;
       }
 
       var data = {
-      enteredBy: enteredBy,
-      moduleCode: moduleCode,
-      moduleSize: moduleSize,
-      }
+        enteredBy: enteredBy,
+        moduleCode: moduleCode,
+        moduleSize: moduleSize,
+        avgTemp: avgTemp,
+        punchInitial: punchInitial,
+        punchDestress: punchDestress,
+        punchWeld: punchWeld,
+        punchLength: punchLength,
+        calculatedExtension: calculatedExtension,
+        stressfreeTemp: stressfreeTemp,
+        // Include other values in the object
+      };
+
+      // ... your save data logic ...
 
       // Close confirmation modal
       closeConfirmModal();
