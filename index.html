@@ -106,12 +106,30 @@
         font-size: 14px;
       }
     }
+
+    .nav-button {
+    display: block;
+    margin: 10px auto;
+    padding: 10px 20px;
+    background-color: #3498db;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    }
+
+  .nav-button:hover {
+  background-color: #2980b9;
+  }
   </style>
 </head>
 <body>
   <h1>SFT CALCULATOR</h1>
 
-  <a href="data.html">View Data</a>
+  <div style="text-align: center;">
+    <button class="nav-button" onclick="window.location.href='data.html'">View Data</button>
+  </div>
 
   <div class="container">
     <table>

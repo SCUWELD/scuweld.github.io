@@ -24,12 +24,30 @@
     border: 1px solid #ccc;
     text-align: left;
   }
+
+  .nav-button {
+    display: block;
+    margin: 10px auto;
+    padding: 10px 20px;
+    background-color: #3498db;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    }
+
+    .nav-button:hover {
+  background-color: #2980b9;
+    }
   </style>
 </head>
 <body>
   <h1>Saved Data</h1>
 
-  <a href="index.html">Back to Calculator</a>
+  <div style="text-align: center;">
+    <button class="nav-button" onclick="window.location.href='index.html'">Back to Calculator</button>
+  </div>
 
   <table id="savedDataTable">
     <thead>
