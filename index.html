@@ -153,12 +153,25 @@
   
   <!-- Modal for missing values alert -->
   <div class="modal-container" id="modalContainer">
-    <!-- ... your existing modal content ... -->
+    <div class="modal-container" id="modalContainer">
+      <div class="modal-content">
+        <h2>Missing Values</h2>
+        <p>Please fill in all required fields.</p>
+        <button onclick="closeModal()">Close</button>
+      </div>
+    </div>
   </div>
 
   <!-- Modal for confirmation and warning -->
   <div class="modal-container" id="confirmModalContainer">
-    <!-- ... your existing confirmation modal content ... -->
+    <div class="modal-container" id="confirmModalContainer">
+      <div class="modal-content">
+        <h2>Confirm Save</h2>
+        <p>Are you sure you want to save the data?</p>
+        <button onclick="saveData()">Yes</button>
+        <button onclick="closeConfirmModal()">No</button>
+      </div>
+    </div>
   </div>
 
   <script>
