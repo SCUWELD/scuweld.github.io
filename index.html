@@ -174,6 +174,11 @@
   <script>
     // ... your existing JavaScript ...
 
+    var calculatedExtension = 0;
+    var punchLength = 0; 
+    var stressfreeTemp = 0;
+
+
     function calculate() {
       var moduleCode = document.getElementById('moduleCode').value;
       var moduleSize = parseFloat(document.getElementById('moduleSize').value);
@@ -231,34 +236,36 @@
 
     // Open the confirmation modal
     function openConfirmModal() {
-  var enteredBy = document.getElementById('enteredBy').value;
-  var moduleCode = document.getElementById('moduleCode').value;
-  var moduleSize = parseFloat(document.getElementById('moduleSize').value);
-  var avgTemp = parseFloat(document.getElementById('avgTemp').value);
-  var punchInitial = parseFloat(document.getElementById('punchInitial').value);
-  var punchDestress = parseFloat(document.getElementById('punchDestress').value);
-  var punchWeld = parseFloat(document.getElementById('punchWeld').value);
+      var enteredBy = document.getElementById('enteredBy').value;
+      var moduleCode = document.getElementById('moduleCode').value;
+      var moduleSize = parseFloat(document.getElementById('moduleSize').value); // Parse as float
+      var avgTemp = parseFloat(document.getElementById('avgTemp').value);
+      var punchInitial = parseFloat(document.getElementById('punchInitial').value);
+      var punchDestress = parseFloat(document.getElementById('punchDestress').value);
+      var punchWeld = parseFloat(document.getElementById('punchWeld').value);
 
-  if (!enteredBy || !moduleCode || !moduleSize || isNaN(avgTemp) || isNaN(punchInitial) || isNaN(punchDestress) || isNaN(punchWeld)) {
-    openModal();
+    if (!enteredBy || !moduleCode || isNaN(moduleSize) || isNaN(avgTemp) || isNaN(punchInitial) || isNaN(punchDestress) || isNaN(punchWeld)) {
+      openModal();
     return;
-  }
+    }
+      
+      var punchLength = punchDestress - punchInitial;
+      var calculatedExtension = (38 - avgTemp) * 0.0117 * moduleSize;
+      var stressfreeTemp = (((punchInitial - calculatedExtension + punchLength) - punchWeld) / (0.0117 * moduleSize)) + 38;
 
-  var stressfreeTemp = (((punchInitial - calculatedExtension + punchLength) - punchWeld) / (0.0117 * moduleSize)) + 38;
+      var stressWarning = document.getElementById('stressWarning');
+      if (stressfreeTemp <= 36) {
+        stressWarning.textContent = 'Warning: Stress Free Temperature is below 36C.';
+        stressWarning.style.display = 'block';
+      } else if (stressfreeTemp >= 40) {
+        stressWarning.textContent = 'Warning: Stress Free Temperature is above 40C.';
+        stressWarning.style.display = 'block';
+      } else {
+        stressWarning.style.display = 'none';
+      }
 
-  var stressWarning = document.getElementById('stressWarning');
-  if (stressfreeTemp <= 36) {
-    stressWarning.textContent = 'Warning: Stress Free Temperature is below 36C.';
-    stressWarning.style.display = 'block';
-  } else if (stressfreeTemp >= 40) {
-    stressWarning.textContent = 'Warning: Stress Free Temperature is above 40C.';
-    stressWarning.style.display = 'block';
-  } else {
-    stressWarning.style.display = 'none';
-  }
-
-  document.getElementById('confirmModalContainer').style.display = 'flex';
-}
+    document.getElementById('confirmModalContainer').style.display = 'flex';
+    }
 
     // Close the confirmation modal
     function closeConfirmModal() {
@@ -268,7 +275,7 @@
     // Save data
     function saveData() {
       var enteredBy = document.getElementById('enteredBy').value;
-      var moduleCode = document.getElementById('moduleCode').value;
+      var moduleCode = parseFloat(document.getElementById('moduleCode').value);
       var moduleSize = parseFloat(document.getElementById('moduleSize').value);
       var avgTemp = parseFloat(document.getElementById('avgTemp').value);
       var punchInitial = parseFloat(document.getElementById('punchInitial').value);
