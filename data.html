@@ -8,13 +8,15 @@
     margin: 0;
     padding: 0;
     background-color: #f0f0f0;
-  }
-  h1 {
-    text-align: center;
-    margin: 20px 0;
-    color: #333;
-  }
-  table {
+     }
+     h1 {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 600;
+      text-align: center;
+      margin: 20px 0;
+      color: #333;
+    }
+table {
     width: 100%;
     border-collapse: collapse;
     margin-top: 20px;
@@ -49,29 +51,104 @@
     <button class="nav-button" onclick="window.location.href='index.html'">Back to Calculator</button>
   </div>
 
-  <table id="savedDataTable">
-    <thead>
-      <tr>
-        <th>Entered By</th>
-        <th>Module Code</th>
-        <th>Module Size</th>
-        <th>Avg Temp</th>
-        <th>Punch Initial</th>
-        <th>Punch Destress</th>
-        <th>Punch Weld</th>
-        <th>Punch Length</th>
-        <th>Calculated Extension</th>
-        <th>Stress Free Temp</th>
-        <th>Delete</th>
-      </tr>
+  <div class="container">
+    <table>
+      <thead>
+        <tr>
+          <th>Entered By</th>
+          <th>Module Code</th>
+          <th>Module Size (m)</th>
+          <th>Average Temperature (C)</th>
+          <th>Punch Mark Initial (mm)</th>
+          <th>Punch Mark after Destress (mm)</th>
+          <th>Punch Mark after Weld (mm)</th>
+          <th>Punch Length</th>
+          <th>Calculated Extension</th>
+          <th>Stress Free Temp</th>
+        </tr>
     </thead>
-    <tbody>
-      <!-- Saved data entries will be inserted here -->
-    </tbody>
+    <tbody id="dataRows"></tbody>
   </table>
-  
+  <div style="text-align: center; margin-top: 20px;">
+    <button class="nav-button" onclick="window.location.href='index.html'">Back to Calculator</button>
+  </div>
+</div>
+
   <script>
-    // Add your JavaScript code for the data page here
+    // Retrieve and display saved data from localStorage
+  var savedData = JSON.parse(localStorage.getItem('savedData')) || [];
+  var dataRows = document.getElementById('dataRows');
+
+  savedData.forEach(function (data) {
+    var newRow = document.createElement('tr');
+    newRow.innerHTML = `
+      <td>${data.enteredBy}</td>
+      <td>${data.moduleCode}</td>
+      <td>${data.moduleSize}</td>
+      <td>${data.avgTemp}</td>
+      <td>${data.punchInitial}</td>
+      <td>${data.punchDestress}</td>
+      <td>${data.punchWeld}</td>
+      <td>${data.punchLength}</td>
+      <td>${data.calculatedExtension}</td>
+      <td>${data.stressfreeTemperature}</td>
+    `;
+    dataRows.appendChild(newRow);
+  });
+
+  // Create delete buttons for each row
+  savedData.forEach(function (data, index) {
+    var newRow = document.createElement('tr');
+    newRow.innerHTML = `
+      <td>${data.enteredBy}</td>
+      <td>${data.moduleCode}</td>
+      <td>${data.moduleSize}</td>
+      <td>${data.avgTemp}</td>
+      <td>${data.punchInitial}</td>
+      <td>${data.punchDestress}</td>
+      <td>${data.punchWeld}</td>
+      <td>
+        <button class="delete-button" onclick="openDeleteModal(${index})">Delete</button>
+      </td>
+    `;
+    dataRows.appendChild(newRow);
+  });
+
+  // Function to open the delete confirmation modal
+  function openDeleteModal(index) {
+    var pin = prompt("Please enter the PIN to confirm deletion:");
+    if (pin === "2023") {
+      // Delete the row from savedData
+      savedData.splice(index, 1);
+
+      // Update localStorage
+      localStorage.setItem('savedData', JSON.stringify(savedData));
+
+      // Clear the table and re-render data
+      dataRows.innerHTML = '';
+      savedData.forEach(function (data, newIndex) {
+        var newRow = document.createElement('tr');
+        newRow.innerHTML = `
+          <td>${data.enteredBy}</td>
+          <td>${data.moduleCode}</td>
+          <td>${data.moduleSize}</td>
+          <td>${data.avgTemp}</td>
+          <td>${data.punchInitial}</td>
+          <td>${data.punchDestress}</td>
+          <td>${data.punchWeld}</td>
+          <td>
+            <button class="delete-button" onclick="openDeleteModal(${newIndex})">Delete</button>
+          </td>
+        `;
+        dataRows.appendChild(newRow);
+      });
+
+      alert("Row deleted successfully!");
+    } else {
+      alert("Invalid PIN. Deletion cancelled.");
+    }
+  }
+
   </script>
 </body>
 </html>

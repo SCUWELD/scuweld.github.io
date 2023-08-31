@@ -382,7 +382,10 @@
       // Include other values in the object
     };
 
-    // ... your save data logic ...
+    // Save data to localStorage
+    var savedData = JSON.parse(localStorage.getItem('savedData')) || [];
+    savedData.push(data);
+    localStorage.setItem('savedData', JSON.stringify(savedData));
 
     // Show success modal
     document.getElementById('successModalContainer').style.display = 'flex';
