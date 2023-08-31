@@ -5,7 +5,7 @@
   <title>SFT Calculator</title>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600&display=swap" rel="stylesheet">
   <style>
-     body {
+    body {
       font-family: Arial, sans-serif;
       margin: 0;
       padding: 0;
@@ -148,25 +148,17 @@
         <td><span id="stressfreeTemp"></span></td>
       </tr>
     </table>
-    <button onclick="save()">Save</button>
+    <button onclick="openConfirmModal()">Save</button>
   </div>
   
   <!-- Modal for missing values alert -->
   <div class="modal-container" id="modalContainer">
-    <div class="modal-content">
-      <p>Please fill in all required fields.</p>
-      <button onclick="closeModal()">OK</button>
-    </div>
+    <!-- ... your existing modal content ... -->
   </div>
 
   <!-- Modal for confirmation and warning -->
   <div class="modal-container" id="confirmModalContainer">
-    <div class="modal-content">
-      <p>Do you want to save the entered and calculated data?</p>
-      <p id="warningText"></p>
-      <button onclick="saveData()">Save</button>
-      <button onclick="closeConfirmModal()">Cancel</button>
-    </div>
+    <!-- ... your existing confirmation modal content ... -->
   </div>
 
   <script>
@@ -180,12 +172,6 @@
       var punchInitial = parseFloat(document.getElementById('punchInitial').value);
       var punchDestress = parseFloat(document.getElementById('punchDestress').value);
       var punchWeld = parseFloat(document.getElementById('punchWeld').value);
-
-      // Check for missing values
-      if (!moduleCode || !moduleSize || isNaN(avgTemp) || isNaN(punchInitial) || isNaN(punchDestress) || isNaN(punchWeld)) {
-        openModal();
-        return;
-      }
 
       // Perform calculations here
       var punchLength = punchDestress - punchInitial;
@@ -203,9 +189,6 @@
       } else {
         document.getElementById('warningText').textContent = '';
       }
-
-      // Open confirmation modal
-      openConfirmModal();
     }
 
     function clearFields() {
@@ -232,6 +215,18 @@
 
     // Open the confirmation modal
     function openConfirmModal() {
+      var moduleCode = document.getElementById('moduleCode').value;
+      var moduleSize = parseFloat(document.getElementById('moduleSize').value);
+      var avgTemp = parseFloat(document.getElementById('avgTemp').value);
+      var punchInitial = parseFloat(document.getElementById('punchInitial').value);
+      var punchDestress = parseFloat(document.getElementById('punchDestress').value);
+      var punchWeld = parseFloat(document.getElementById('punchWeld').value);
+
+      if (!moduleCode || !moduleSize || isNaN(avgTemp) || isNaN(punchInitial) || isNaN(punchDestress) || isNaN(punchWeld)) {
+        openModal();
+        return;
+      }
+
       document.getElementById('confirmModalContainer').style.display = 'flex';
     }
 
@@ -242,8 +237,13 @@
 
     // Save data
     function saveData() {
-      var moduleCode = document.getElementById('moduleCode').value;
+      var enteredBy = document.getElementById('enteredBy').value;
+      var moduleCode = parsefloat(document.getElementById('moduleCode').value);
       var moduleSize = parseFloat(document.getElementById('moduleSize').value);
+      var avgTemp = parseFloat(document.getElementById('avgTemp').value);
+      var punchInitial = parseFloat(document.getElementById('punchInitial').value);
+      var punchDestress = parseFloat(document.getElementById('punchDestress').value);
+      var punchWeld = parseFloat(document.getElementById('punchWeld').value);
 
       // Check for missing or zero values
       if (!moduleCode || !moduleSize || isNaN(avgTemp) || isNaN(punchInitial) || isNaN(punchDestress) || isNaN(punchWeld)) {
@@ -252,10 +252,11 @@
       }
 
       var data = {
+      enteredBy: enteredBy,
       moduleCode: moduleCode,
       moduleSize: moduleSize,
       }
-  
+
       // Close confirmation modal
       closeConfirmModal();
     }
