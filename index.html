@@ -87,6 +87,15 @@
       padding: 20px;
       max-width: 300px;
       text-align: center;
+      position: relative;
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      font-size: 18px;
+      cursor: pointer;
     }
 
     @media screen and (max-width: 600px) {
@@ -154,6 +163,7 @@
   <!-- Modal for missing values alert -->
   <div class="modal-container" id="modalContainer">
     <div class="modal-content">
+      <span class="modal-close" onclick="closeModal()">x</span>
       <h2>Missing Values</h2>
       <p>Please fill in all required fields.</p>
       <button onclick="closeModal()">Close</button>
@@ -163,8 +173,10 @@
   <!-- Modal for confirmation and warning -->
   <div class="modal-container" id="confirmModalContainer">
     <div class="modal-content">
+      <span class="modal-close" onclick="closeConfirmModal()">&times;</span>
       <h2>Confirm Save</h2>
       <p>Are you sure you want to save the data?</p>
+      <div id="summarySection"></div>
       <p id="stressWarning" style="color: red;"></p>
       <button onclick="saveData()">Yes</button>
       <button onclick="closeConfirmModal()">No</button>
@@ -172,22 +184,27 @@
   </div>
 
   <!-- Modal for successful data save -->
-<div class="modal-container" id="successModalContainer">
-  <div class="modal-content">
-    <h2>Data Saved Successfully</h2>
-    <p>Your data has been saved successfully.</p>
-    <button onclick="clearAllAndStartAgain()">Clear All and Start Again</button>
+  <div class="modal-container" id="successModalContainer">
+    <div class="modal-content">
+      <span class="modal-close" onclick="closeSuccessModal()">x</span>
+      <h2>Data Saved Successfully</h2>
+      <p>Your data has been saved successfully.</p>
+      <button onclick="clearAllAndStartAgain()">Clear All and Start Again</button>
+    </div>
   </div>
-</div>
+
+  <!-- Modal for clear fields function -->
+  <div class="modal-container" id="clearFieldsModalContainer">
+    <div class="modal-content">
+      <span class="modal-close" onclick="closeClearFieldsModal()">x</span>
+      <h2>Confirm Clear Fields</h2>
+      <p>Are you sure you want to clear all fields?</p>
+      <button onclick="clearFieldsAndCloseModal()">Yes</button>
+      <button onclick="closeClearFieldsModal()">No</button>
+    </div>
+  </div>
 
   <script>
-    // ... your existing JavaScript ...
-
-    var calculatedExtension = 0;
-    var punchLength = 0; 
-    var stressfreeTemp = 0;
-
-
     function calculate() {
       var moduleCode = document.getElementById('moduleCode').value;
       var moduleSize = parseFloat(document.getElementById('moduleSize').value);
@@ -196,31 +213,38 @@
       var punchDestress = parseFloat(document.getElementById('punchDestress').value);
       var punchWeld = parseFloat(document.getElementById('punchWeld').value);
 
-      // Check for missing values
-      if (!moduleCode || !moduleSize || isNaN(avgTemp) || isNaN(punchInitial) || isNaN(punchDestress) || isNaN(punchWeld)) {
-        openModal();
-        return;
-      }
-
-      // Perform calculations here
-      var punchLength = punchDestress - punchInitial;
-      var calculatedExtension = (38 - avgTemp) * 0.0117 * moduleSize;
-      var stressfreeTemp = (((punchInitial - calculatedExtension + punchLength) - punchWeld) / (0.0117 * moduleSize)) + 38;
-
-      // Update the results on the page
-      document.getElementById('punchLength').textContent = punchLength.toFixed(2);
-      document.getElementById('calculatedExtension').textContent = calculatedExtension.toFixed(2);
-      document.getElementById('stressfreeTemp').textContent = stressfreeTemp.toFixed(2);
-
-      // Check if stressfreeTemp is above 40 or below 36
-      if (stressfreeTemp > 40 || stressfreeTemp < 36) {
-        document.getElementById('warningText').textContent = 'Warning: Stress Free Temperature is outside the recommended range (36 - 40).';
-      } else {
-        document.getElementById('warningText').textContent = '';
-      }
+    // Check for missing values
+    if (!moduleCode || !moduleSize || isNaN(avgTemp) || isNaN(punchInitial) || isNaN(punchDestress) || isNaN(punchWeld)) {
+      openModal();
+      return;
     }
 
+    // Perform calculations here
+    punchLength = punchDestress - punchInitial; // Updated here
+    calculatedExtension = (38 - avgTemp) * 0.0117 * moduleSize; // Updated here
+    stressfreeTemp = (((punchInitial - calculatedExtension + punchLength) - punchWeld) / (0.0117 * moduleSize)) + 38; // Updated here
+
+    // Update the results on the page
+    document.getElementById('punchLength').textContent = punchLength.toFixed(2);
+    document.getElementById('calculatedExtension').textContent = calculatedExtension.toFixed(2);
+    document.getElementById('stressfreeTemp').textContent = stressfreeTemp.toFixed(2);
+
+    // Check if stressfreeTemp is above 40 or below 36
+    if (stressfreeTemp > 40 || stressfreeTemp < 36) {
+      document.getElementById('warningText').textContent = 'Warning: Stress Free Temperature is outside the recommended range (36 - 40).';
+    } else {
+      document.getElementById('warningText').textContent = '';
+    }
+  }
+
     function clearFields() {
+       openClearFieldsModal();
+    }
+
+    function clearFieldsAndCloseModal() {
+      clearFields();  // This clears the fields
+      closeClearFieldsModal();  // This closes the modal
+
       document.getElementById('enteredBy').value = '';
       document.getElementById('moduleCode').value = '';
       document.getElementById('moduleSize').value = '';
@@ -231,6 +255,17 @@
       document.getElementById('punchLength').textContent = '';
       document.getElementById('calculatedExtension').textContent = '';
       document.getElementById('stressfreeTemp').textContent = '';
+      document.getElementById('warningText').textContent = ''; // Clear the warning text as well
+    }
+
+    // Open the clear fields confirmation modal
+    function openClearFieldsModal() {
+      document.getElementById('clearFieldsModalContainer').style.display = 'flex';
+    }
+
+    // Close the clear fields confirmation modal
+    function closeClearFieldsModal() {
+      document.getElementById('clearFieldsModalContainer').style.display = 'none';
     }
 
     // Open the modal
@@ -272,6 +307,21 @@
       } else {
         stressWarning.style.display = 'none';
       }
+
+      var summarySection = document.getElementById('summarySection');
+      summarySection.innerHTML = `
+        <h3>Summary:</h3>
+        <p>Entered By: ${enteredBy}</p>
+        <p>Module Code: ${moduleCode}</p>
+        <p>Module Size: ${moduleSize} m</p>
+        <p>Average Temperature: ${avgTemp} C</p>
+        <p>Punch Mark Initial: ${punchInitial} mm</p>
+        <p>Punch Mark after Destress: ${punchDestress} mm</p>
+        <p>Punch Mark after Weld: ${punchWeld} mm</p>
+        <p>Punch Length: ${punchLength.toFixed(2)} mm</p>
+        <p>Calculated Extension: ${calculatedExtension.toFixed(2)} mm</p>
+        <p>Stress Free Temperature: ${stressfreeTemp.toFixed(2)} C</p>
+      `;
 
     document.getElementById('confirmModalContainer').style.display = 'flex';
     }
