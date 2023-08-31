@@ -165,6 +165,7 @@
     <div class="modal-content">
       <h2>Confirm Save</h2>
       <p>Are you sure you want to save the data?</p>
+      <p id="stressWarning" style="color: red;"></p>
       <button onclick="saveData()">Yes</button>
       <button onclick="closeConfirmModal()">No</button>
     </div>
@@ -230,21 +231,34 @@
 
     // Open the confirmation modal
     function openConfirmModal() {
-      var enteredBy = document.getElementById('enteredBy').value;
-      var moduleCode = document.getElementById('moduleCode').value;
-      var moduleSize = parseFloat(document.getElementById('moduleSize').value);
-      var avgTemp = parseFloat(document.getElementById('avgTemp').value);
-      var punchInitial = parseFloat(document.getElementById('punchInitial').value);
-      var punchDestress = parseFloat(document.getElementById('punchDestress').value);
-      var punchWeld = parseFloat(document.getElementById('punchWeld').value);
+  var enteredBy = document.getElementById('enteredBy').value;
+  var moduleCode = document.getElementById('moduleCode').value;
+  var moduleSize = parseFloat(document.getElementById('moduleSize').value);
+  var avgTemp = parseFloat(document.getElementById('avgTemp').value);
+  var punchInitial = parseFloat(document.getElementById('punchInitial').value);
+  var punchDestress = parseFloat(document.getElementById('punchDestress').value);
+  var punchWeld = parseFloat(document.getElementById('punchWeld').value);
 
-      if (!enteredBy || !moduleCode || !moduleSize || isNaN(avgTemp) || isNaN(punchInitial) || isNaN(punchDestress) || isNaN(punchWeld)) {
-        openModal();
-        return;
-      }
+  if (!enteredBy || !moduleCode || !moduleSize || isNaN(avgTemp) || isNaN(punchInitial) || isNaN(punchDestress) || isNaN(punchWeld)) {
+    openModal();
+    return;
+  }
 
-      document.getElementById('confirmModalContainer').style.display = 'flex';
-    }
+  var stressfreeTemp = (((punchInitial - calculatedExtension + punchLength) - punchWeld) / (0.0117 * moduleSize)) + 38;
+
+  var stressWarning = document.getElementById('stressWarning');
+  if (stressfreeTemp <= 36) {
+    stressWarning.textContent = 'Warning: Stress Free Temperature is below 36C.';
+    stressWarning.style.display = 'block';
+  } else if (stressfreeTemp >= 40) {
+    stressWarning.textContent = 'Warning: Stress Free Temperature is above 40C.';
+    stressWarning.style.display = 'block';
+  } else {
+    stressWarning.style.display = 'none';
+  }
+
+  document.getElementById('confirmModalContainer').style.display = 'flex';
+}
 
     // Close the confirmation modal
     function closeConfirmModal() {
