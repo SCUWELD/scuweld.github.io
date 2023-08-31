@@ -107,6 +107,9 @@
       }
     }
   </style>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.1/xlsx.full.min.js"></script>
+
 </head>
 <body>
   <h1>SFT CALCULATOR</h1>
@@ -361,13 +364,26 @@
       // Include other values in the object
     };
 
-    // ... your save data logic ...
+    var workbook = XLSX.utils.book_new();
+    var worksheet = XLSX.utils.json_to_sheet([data]);
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1');
 
-    // Show success modal
-    document.getElementById('successModalContainer').style.display = 'flex';
-    // Close confirmation modal
-    closeConfirmModal();
-  }
+    // Generate a blob from the workbook and create a download link
+    var blob = new Blob([XLSX.write(workbook, { bookType: 'xlsx', type: 'blob' })], {
+    type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    });
+    var url = URL.createObjectURL(blob);
+
+      var a = document.createElement('a');
+      a.href = url;
+      a.download = 'data.xlsx';
+      a.click();
+
+      // Show success modal
+      document.getElementById('successModalContainer').style.display = 'flex';
+      // Close confirmation modal
+      closeConfirmModal();
+    }
 
   function clearAllAndStartAgain() {
     clearFields();
