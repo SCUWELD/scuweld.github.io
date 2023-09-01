@@ -194,7 +194,7 @@
       <p>Are you sure you want to save the data?</p>
       <div id="summarySection"></div>
       <p id="stressWarning" style="color: red;"></p>
-      <button onclick="saveData()">Yes</button>
+      <button onclick="saveData();clearAllAndStartAgain()">Yes</button>
       <button onclick="closeConfirmModal()">No</button>
     </div>
   </div>
@@ -205,7 +205,6 @@
       <span class="modal-close" onclick="closeSuccessModal()">x</span>
       <h2>Data Saved Successfully</h2>
       <p>Your data has been saved successfully.</p>
-      <button onclick="clearAllAndStartAgain(); closeSuccessModal()">Clear All and start Again</button>
     </div>
   </div>
 
@@ -215,7 +214,7 @@
       <span class="modal-close" onclick="closeClearFieldsModal()">x</span>
       <h2>Confirm Clear Fields</h2>
       <p>Are you sure you want to clear all fields?</p>
-      <button onclick="clearAllAndStartAgain(); closeClearFieldsModal();">Yes</button>
+      <button onclick="clearAllAndStartAgain();">Yes</button>
       <button onclick="closeClearFieldsModal();">No</button>
     </div>
   </div>
@@ -285,38 +284,37 @@
 
       // Close the clear fields modal
       closeClearFieldsModal();
-      }
+    }
 
     function clearFields() {
-      clearFieldsAndCloseModal();
+     clearFieldsAndCloseModal();
     }
 
     function closeClearFieldsModal() {
-    document.getElementById('clearFieldsModalContainer').style.display = 'none';
-    }
-
-
-    // Clear all fields and close the success modal
-    function clearAllAndStartAgain() {
-      // Clear Fields
-      document.getElementById('enteredBy').value = '';
-      document.getElementById('moduleCode').value = '';
-      document.getElementById('moduleSize').value = '';
-      document.getElementById('avgTemp').value = '';
-      document.getElementById('punchInitial').value = '';
-      document.getElementById('punchDestress').value = '';
-      document.getElementById('punchWeld').value = '';
-      document.getElementById('punchLength').textContent = '';
-      document.getElementById('calculatedExtension').textContent = '';
-      document.getElementById('stressfreeTemp').textContent = '';
-      document.getElementById('warningText').textContent = ''; // Clear the warning text as well
-    
-      // Close both the clear fields modal and the success modal
       document.getElementById('clearFieldsModalContainer').style.display = 'none';
-
-      // Close the success modal
-      document.getElementById('successModalContainer').style.display = 'none';
     }
+
+  // Clear all fields and close the success modal
+  function clearAllAndStartAgain() {
+  // Clear Fields
+    document.getElementById('enteredBy').value = '';
+    document.getElementById('moduleCode').value = '';
+    document.getElementById('moduleSize').value = '';
+    document.getElementById('avgTemp').value = '';
+    document.getElementById('punchInitial').value = '';
+    document.getElementById('punchDestress').value = '';
+    document.getElementById('punchWeld').value = '';
+    document.getElementById('punchLength').textContent = '';
+    document.getElementById('calculatedExtension').textContent = '';
+    document.getElementById('stressfreeTemp').textContent = '';
+
+  // Close the clear fields modal
+  document.getElementById('clearFieldsModalContainer').style.display = 'none';
+
+  // Close the success modal
+  document.getElementById('successModalContainer').style.display = 'none';
+}
+
 
     // Open the clear fields confirmation modal
   function openClearFieldsModal() {
