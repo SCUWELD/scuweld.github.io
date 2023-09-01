@@ -16,18 +16,33 @@
       margin: 20px 0;
       color: #333;
     }
-table {
+    table {
     width: 100%;
     border-collapse: collapse;
     margin-top: 20px;
-  }
-  th, td {
+    }
+    th, td {
     padding: 10px;
     border: 1px solid #ccc;
     text-align: left;
-  }
+    }
 
-  .nav-button {
+    button {
+      display: block;
+      margin: 10px auto;
+      padding: 10px 20px;
+      background-color: #3498db;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    button:hover {
+      background-color: #2980b9;
+    }
+
+    .nav-button {
     display: block;
     margin: 10px auto;
     padding: 10px 20px;
@@ -40,8 +55,48 @@ table {
     }
 
     .nav-button:hover {
-  background-color: #2980b9;
+    background-color: #2980b9;
     }
+
+    .modal-container {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+
+    .modal-content {
+      background-color: #fff;
+      border-radius: 10px;
+      padding: 20px;
+      max-width: 300px;
+      text-align: center;
+      position: relative;
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      font-size: 18px;
+      cursor: pointer;
+    }
+
+  @media screen and (max-width: 600px) {
+      .container {
+        padding: 10px;
+      }
+      table, th, td {
+        font-size: 14px;
+      }
+    }
+
   </style>
 </head>
 <body>
@@ -49,12 +104,15 @@ table {
 
   <div style="text-align: center;">
     <button class="nav-button" onclick="window.location.href='index.html'">Back to Calculator</button>
+    <button class="nav-button" onclick="downloadExcel()">Download Excel</button>
   </div>
 
   <div class="container">
     <table>
       <thead>
         <tr>
+          <th>Date</th>
+          <th>Time</th>
           <th>Entered By</th>
           <th>Module Code</th>
           <th>Module Size (m)</th>
@@ -65,90 +123,136 @@ table {
           <th>Punch Length</th>
           <th>Calculated Extension</th>
           <th>Stress Free Temp</th>
+          <th>Delete</th>
         </tr>
-    </thead>
-    <tbody id="dataRows"></tbody>
-  </table>
-  <div style="text-align: center; margin-top: 20px;">
-    <button class="nav-button" onclick="window.location.href='index.html'">Back to Calculator</button>
+      </thead>
+      <tbody id="dataRows"></tbody>
+    </table>
+    <div style="text-align: center; margin-top: 20px;">
+      <button class="nav-button" onclick="window.location.href='index.html'">Back to Calculator</button>
+    </div>
   </div>
-</div>
+
+  <!-- Modal for deletion message -->
+  <div class="modal-container" id="deleteModalContainer" style="display: none;">
+    <div class="modal-content">
+      <span class="modal-close" onclick="closeDeleteModal()">&times;</span>
+      <h2>Confirm Delete</h2>
+      <p>Are you sure you want to delete this row?</p>
+      <input type="password" id="pinInput" placeholder="">
+      <p id="pinError" style="color: red; display: none;">Incorrect PIN. Deletion cancelled.</p>
+      <button onclick="deleteRow()">Delete</button>
+      <button onclick="closeDeleteModal()">Cancel</button>
+    </div>
+  </div>
 
   <script>
-    // Retrieve and display saved data from localStorage
-  var savedData = JSON.parse(localStorage.getItem('savedData')) || [];
-  var dataRows = document.getElementById('dataRows');
+  // Retrieve and display saved data from localStorage
+    var savedData = JSON.parse(localStorage.getItem('savedData')) || [];
+    var dataRows = document.getElementById('dataRows');
 
-  savedData.forEach(function (data) {
+    savedData.forEach(function (data, index) {
     var newRow = document.createElement('tr');
+    var timestamp = new Date(data.timestamp);
+    var date = timestamp.toLocaleDateString();
+    var time = timestamp.toLocaleTimeString();
     newRow.innerHTML = `
-      <td>${data.enteredBy}</td>
-      <td>${data.moduleCode}</td>
-      <td>${data.moduleSize}</td>
-      <td>${data.avgTemp}</td>
-      <td>${data.punchInitial}</td>
-      <td>${data.punchDestress}</td>
-      <td>${data.punchWeld}</td>
-      <td>${data.punchLength}</td>
-      <td>${data.calculatedExtension}</td>
-      <td>${data.stressfreeTemperature}</td>
+        <td>${date}</td>
+        <td>${time}</td>
+        <td>${data.enteredBy}</td>
+        <td>${data.moduleCode}</td>
+        <td>${data.moduleSize}</td>
+        <td>${data.avgTemp}</td>
+        <td>${data.punchInitial}</td>
+        <td>${data.punchDestress}</td>
+        <td>${data.punchWeld}</td>
+        <td>${data.punchLength}</td>  <!-- Include punchLength -->
+        <td>${data.calculatedExtension}</td>  <!-- Include calculatedExtension -->
+        <td>${data.stressfreeTemp}</td>  <!-- Include stressfreeTemp -->
+        <td><button class="delete-button" onclick="openDeleteModal(${index})">Delete</button></td>
     `;
     dataRows.appendChild(newRow);
-  });
+    });
 
-  // Create delete buttons for each row
-  savedData.forEach(function (data, index) {
-    var newRow = document.createElement('tr');
-    newRow.innerHTML = `
-      <td>${data.enteredBy}</td>
-      <td>${data.moduleCode}</td>
-      <td>${data.moduleSize}</td>
-      <td>${data.avgTemp}</td>
-      <td>${data.punchInitial}</td>
-      <td>${data.punchDestress}</td>
-      <td>${data.punchWeld}</td>
-      <td>
-        <button class="delete-button" onclick="openDeleteModal(${index})">Delete</button>
-      </td>
-    `;
-    dataRows.appendChild(newRow);
-  });
-
-  // Function to open the delete confirmation modal
-  function openDeleteModal(index) {
-    var pin = prompt("Please enter the PIN to confirm deletion:");
-    if (pin === "2023") {
-      // Delete the row from savedData
-      savedData.splice(index, 1);
-
-      // Update localStorage
-      localStorage.setItem('savedData', JSON.stringify(savedData));
-
-      // Clear the table and re-render data
-      dataRows.innerHTML = '';
-      savedData.forEach(function (data, newIndex) {
-        var newRow = document.createElement('tr');
-        newRow.innerHTML = `
-          <td>${data.enteredBy}</td>
-          <td>${data.moduleCode}</td>
-          <td>${data.moduleSize}</td>
-          <td>${data.avgTemp}</td>
-          <td>${data.punchInitial}</td>
-          <td>${data.punchDestress}</td>
-          <td>${data.punchWeld}</td>
-          <td>
-            <button class="delete-button" onclick="openDeleteModal(${newIndex})">Delete</button>
-          </td>
-        `;
-        dataRows.appendChild(newRow);
-      });
-
-      alert("Row deleted successfully!");
-    } else {
-      alert("Invalid PIN. Deletion cancelled.");
+    function openDeleteModal(index) {
+      deleteRowIndex = index;
+      document.getElementById('deleteModalContainer').style.display = 'flex';
     }
-  }
+
+    function closeDeleteModal() {
+      document.getElementById('deleteModalContainer').style.display = 'none';
+    }
+
+    function deleteRow() {
+        var enteredPIN = document.getElementById('pinInput').value;
+        var correctPIN = "2023"; // Change this to your correct PIN
+
+        var pinError = document.getElementById('pinError');
+        
+        if (enteredPIN === correctPIN) {
+            savedData.splice(deleteRowIndex, 1);
+            localStorage.setItem('savedData', JSON.stringify(savedData));
+
+            closeDeleteModal();
+            pinError.style.display = 'none';
+        } else {
+            pinError.style.display = 'block';
+            document.getElementById('pinInput').value = ""; // Clear the PIN input field
+        }
+
+        // After a successful deletion, refresh the page
+         location.reload();
+    }
+
+    function downloadExcel() {
+    var sheetData = savedData.map(function(data) {
+    return [
+      new Date(data.timestamp).toLocaleDateString(),
+      new Date(data.timestamp).toLocaleTimeString(),
+      data.enteredBy,
+      data.moduleCode,
+      data.moduleSize,
+      data.avgTemp,
+      data.punchInitial,
+      data.punchDestress,
+      data.punchWeld,
+      data.punchLength,
+      data.calculatedExtension,
+      data.stressfreeTemp
+    ];
+  });
+
+  var sheet = XLSX.utils.aoa_to_sheet([
+    [
+      "Date",
+      "Time",
+      "Entered By",
+      "Module Code",
+      "Module Size (m)",
+      "Average Temperature (C)",
+      "Punch Mark Initial (mm)",
+      "Punch Mark after Destress (mm)",
+      "Punch Mark after Weld (mm)",
+      "Punch Length",
+      "Calculated Extension",
+      "Stress Free Temp"
+    ],
+    ...sheetData
+  ]);
+
+  var wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, sheet, "Saved Data");
+  
+  // Generate a unique filename using timestamp
+  var currentTimestamp = new Date().toISOString().replace(/[-:.]/g, "");
+      var fileName = "SFT_CALC_DATA_" + currentTimestamp + ".xlsx";
+
+      XLSX.writeFile(wb, fileName);
+    }
 
   </script>
+
+<script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+
 </body>
 </html>
